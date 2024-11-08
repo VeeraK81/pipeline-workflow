@@ -3,3 +3,6 @@ scikit-learn
 pandas
 boto3
 pytest
+lightgbm
+numpy
+joblib
