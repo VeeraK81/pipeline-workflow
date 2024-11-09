@@ -27,31 +27,38 @@ def sendRequest(msg):
 
 
 
-bootstrap_servers = ['kafka:9092']
+def run_consumer():
+    bootstrap_servers = ['kafka:9092']
 
-topicName = 'source.public.experiments'
+    topicName = 'source.public.experiments'
 
-# Initialize consumer variable
-consumer = KafkaConsumer(
-    topicName , 
-    auto_offset_reset='earliest',
-    bootstrap_servers = bootstrap_servers, 
-    group_id='sales-transactions'
-    )
+    # Initialize consumer variable
+    consumer = KafkaConsumer(
+        topicName , 
+        auto_offset_reset='earliest',
+        bootstrap_servers = bootstrap_servers, 
+        group_id='sales-transactions'
+        )
 
-consumer.topics()
+    consumer.topics()
 
-# Read and print message from consumer
-for msg in consumer:
-    
-    try:
-        # Process each message and send to Airflow
-        transaction_data = msg.value.decode('utf-8')
-        sendRequest(transaction_data)
-    except json.JSONDecodeError as e:
-        print(f"Error decoding message: {e}")
-    except Exception as e:
-        print(f"Unexpected error processing message: {e}")       
+    # Read and print message from consumer
+    for msg in consumer:
+        
+        try:
+            # Process each message and send to Airflow
+            transaction_data = msg.value.decode('utf-8')
+            sendRequest(transaction_data)
+        except json.JSONDecodeError as e:
+            print(f"Error decoding message: {e}")
+        except Exception as e:
+            print(f"Unexpected error processing message: {e}")
+            
+
+# Entry point for the script
+if __name__ == "__main__":
+    print('inside kafka-consume-file')
+    run_consumer()      
 
     
     

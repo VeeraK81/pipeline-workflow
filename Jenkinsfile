@@ -21,14 +21,23 @@ pipeline {
         stage('Run Docker Image') {
             steps {
                 script {
-                    // docker.image('fraud-detection-pipeline-image').inside {
-                    //     sh 'python tests/tests.py --junitxml=results.xml'
-                    // }
-                    // sh 'docker run --rm -v  $(pwd):/app ${DOCKER_IMAGE}'
-                     sh 'docker run -d --name fraud-detection-container fraud-detection-pipeline-image'
+                    // Run the Docker container in detached mode
+                    sh 'docker run -d --name fraud-detection-container fraud-detection-pipeline-image'
+
+                    // Verify that the container is running
+                    def containerStatus = sh(script: "docker inspect -f '{{.State.Running}}' fraud-container", returnStdout: true).trim()
+
+                    // Check if the container is running
+                    if (containerStatus != 'true') {
+                        error "The container 'fraud-container' failed to start."
+                    } else {
+                        echo "The container 'fraud-container' is running successfully."
+                    }
                 }
             }
         }
+    
+
 
 
     //     stage('Run Tests Inside Docker Container') {
@@ -64,10 +73,10 @@ pipeline {
     }
 
     post {
-        always {
-            // Clean up workspace and remove dangling Docker images
-            sh 'docker system prune -f'
-        }
+        // always {
+        //     // Clean up workspace and remove dangling Docker images
+        //     sh 'docker system prune -f'
+        // }
         success {
             echo 'Pipeline completed successfully!'
         }
