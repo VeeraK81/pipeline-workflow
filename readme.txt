@@ -2,6 +2,11 @@
 
 - This container is running inside the Jenkins docker.  To know about this: 
 
+Steps:
+- Changes push to github
+- Create pipeline in jenkins
+- create env variables in jenkins 
+
 - go to jenkins in docker 
 $ docker exec -it <jenkinsContainerId> bash
 - navigate to /var/jenkins_home/workspace
@@ -12,24 +17,3 @@ $ docker exec -it <containerId> bash
 
 
 
-
-
-services:
-  mlflow:
-    build: .
-    image: jedha/sample-mlflow-server
-    container_name: mlflow-server
-    env_file:
-    - .env
-    environment:
-      - BACKEND_STORE_URI=${BACKEND_STORE_URI}
-      - ARTIFACT_ROOT=${ARTIFACT_ROOT} 
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}  # Use environment variable for security
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}  # Use environment variable for security
-    ports:
-      - ${PORT}  # Expose MLflow on port 8081 mapping 5000
-    volumes:
-      - mlflow-volume:/var/lib/mlflow/data
-
-volumes:
-  mlflow-volume:

@@ -6,3 +6,5 @@ pytest
 lightgbm
 numpy
 joblib
+kafka-python
+requests
