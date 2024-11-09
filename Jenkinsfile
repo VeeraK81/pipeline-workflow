@@ -2,6 +2,22 @@ pipeline {
     agent any
 
     stages {
+        stage('Cleanup Existing Containers') {
+            steps {
+                script {
+                    // Stop and remove any existing container with the name "fraud-detection"
+                    sh '''
+                    if [ $(docker ps -a -q -f name=fraud-detection) ]; then
+                        echo "Stopping and removing existing fraud-detection container..."
+                        docker stop fraud-detection || true
+                        docker rm fraud-detection || true
+                    fi
+                    '''
+                }
+            }
+        }
+
+
         stage('Checkout') {
             steps {
                 // Checkout the code from the repository
