@@ -24,7 +24,8 @@ pipeline {
                     // docker.image('fraud-detection-pipeline-image').inside {
                     //     sh 'python tests/tests.py --junitxml=results.xml'
                     // }
-                    sh 'docker run --rm -v  $(pwd):/app ${DOCKER_IMAGE}'
+                    // sh 'docker run --rm -v  $(pwd):/app ${DOCKER_IMAGE}'
+                     sh 'docker run -d --name fraud-detection-container fraud-detection-pipeline-image'
                 }
             }
         }
