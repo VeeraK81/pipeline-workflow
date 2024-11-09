@@ -25,13 +25,13 @@ pipeline {
                     sh 'docker run -d --name fraud-detection-container fraud-detection-pipeline-image'
 
                     // Verify that the container is running
-                    def containerStatus = sh(script: "docker inspect -f '{{.State.Running}}' fraud-container", returnStdout: true).trim()
+                    def containerStatus = sh(script: "docker inspect -f '{{.State.Running}}' fraud-detection-container", returnStdout: true).trim()
 
                     // Check if the container is running
                     if (containerStatus != 'true') {
-                        error "The container 'fraud-container' failed to start."
+                        error "The container 'fraud-detection-container' failed to start."
                     } else {
-                        echo "The container 'fraud-container' is running successfully."
+                        echo "The container 'fraud-detection-container' is running successfully."
                     }
                 }
             }
