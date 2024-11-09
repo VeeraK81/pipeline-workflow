@@ -67,6 +67,7 @@ bootstrap_servers = ['192.168.120.128:9092']
 
 topicName = 'source.public.experiments'
 
+print("after topic file")
 # Initialize consumer variable
 consumer = KafkaConsumer(
     topicName , 

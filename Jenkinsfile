@@ -73,10 +73,10 @@ pipeline {
     }
 
     post {
-        // always {
-        //     // Clean up workspace and remove dangling Docker images
-        //     sh 'docker system prune -f'
-        // }
+        always {
+            // Clean up workspace and remove dangling Docker images
+            sh 'docker system prune -f'
+        }
         success {
             echo 'Pipeline completed successfully!'
         }
