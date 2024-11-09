@@ -27,66 +27,69 @@ def sendRequest(msg):
 
 
 
-# def run_consumer():
-#     bootstrap_servers = ['kafka:9092']
+def run_consumer():
+    print('inside run consumer')
 
-#     topicName = 'source.public.experiments'
+    # bootstrap_servers = ['kafka:9092']
+    bootstrap_servers = ['192.168.120.128:9092']
 
-#     # Initialize consumer variable
-#     consumer = KafkaConsumer(
-#         topicName , 
-#         auto_offset_reset='earliest',
-#         bootstrap_servers = bootstrap_servers, 
-#         group_id='sales-transactions'
-#         )
+    topicName = 'source.public.experiments'
 
-#     consumer.topics()
+    # Initialize consumer variable
+    consumer = KafkaConsumer(
+        topicName , 
+        auto_offset_reset='earliest',
+        bootstrap_servers = bootstrap_servers, 
+        group_id='sales-transactions'
+        )
+    print('after bootstrap')
+    consumer.topics()
 
-#     # Read and print message from consumer
-#     for msg in consumer:
+    # Read and print message from consumer
+    for msg in consumer:
         
-#         try:
-#             # Process each message and send to Airflow
-#             transaction_data = msg.value.decode('utf-8')
-#             sendRequest(transaction_data)
-#         except json.JSONDecodeError as e:
-#             print(f"Error decoding message: {e}")
-#         except Exception as e:
-#             print(f"Unexpected error processing message: {e}")
+        try:
+            # Process each message and send to Airflow
+            transaction_data = msg.value.decode('utf-8')
+            sendRequest(transaction_data)
+        except json.JSONDecodeError as e:
+            print(f"Error decoding message: {e}")
+        except Exception as e:
+            print(f"Unexpected error processing message: {e}")
             
 
-# # Entry point for the script
-# if __name__ == "__main__":
-#     print('inside kafka-consume-file')
-#     run_consumer()      
+# Entry point for the script
+if __name__ == "__main__":
+    print('main kafka-consume-file')
+    run_consumer()      
 
-print("inside fraud-detection file")
+# print("inside fraud-detection file")
 
-# bootstrap_servers = ['kafka:9092']
-bootstrap_servers = ['192.168.120.128:9092']
+# # bootstrap_servers = ['kafka:9092']
+# bootstrap_servers = ['192.168.120.128:9092']
 
-topicName = 'source.public.experiments'
+# topicName = 'source.public.experiments'
 
-print("after topic file")
-# Initialize consumer variable
-consumer = KafkaConsumer(
-    topicName , 
-    auto_offset_reset='earliest',
-    bootstrap_servers = bootstrap_servers, 
-    group_id='sales-transactions'
-    )
+# print("after topic file")
+# # Initialize consumer variable
+# consumer = KafkaConsumer(
+#     topicName , 
+#     auto_offset_reset='earliest',
+#     bootstrap_servers = bootstrap_servers, 
+#     group_id='sales-transactions'
+#     )
 
-consumer.topics()
+# consumer.topics()
 
-# Read and print message from consumer
-for msg in consumer:
+# # Read and print message from consumer
+# for msg in consumer:
     
-    try:
-        # Process each message and send to Airflow
-        transaction_data = msg.value.decode('utf-8')
-        sendRequest(transaction_data)
-    except json.JSONDecodeError as e:
-        print(f"Error decoding message: {e}")
-    except Exception as e:
-        print(f"Unexpected error processing message: {e}")   
+#     try:
+#         # Process each message and send to Airflow
+#         transaction_data = msg.value.decode('utf-8')
+#         sendRequest(transaction_data)
+#     except json.JSONDecodeError as e:
+#         print(f"Error decoding message: {e}")
+#     except Exception as e:
+#         print(f"Unexpected error processing message: {e}")   
     
