@@ -22,16 +22,16 @@ pipeline {
             steps {
                 script {
                     // Run the Docker container in detached mode
-                    sh 'docker run -d --name fraud-detection-container fraud-detection-pipeline-image'
+                    sh 'docker run -d --name fraud-detection fraud-detection-pipeline-image'
 
                     // Verify that the container is running
-                    def containerStatus = sh(script: "docker inspect -f '{{.State.Running}}' fraud-detection-container", returnStdout: true).trim()
+                    def containerStatus = sh(script: "docker inspect -f '{{.State.Running}}' fraud-detection", returnStdout: true).trim()
 
                     // Check if the container is running
                     if (containerStatus != 'true') {
-                        error "The container 'fraud-detection-container' failed to start."
+                        error "The container 'fraud-detection' failed to start."
                     } else {
-                        echo "The container 'fraud-detection-container' is running successfully."
+                        echo "The container 'fraud-detection' is running successfully."
                     }
                 }
             }
