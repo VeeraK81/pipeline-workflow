@@ -15,4 +15,6 @@ RUN curl -fsSL https://get.deta.dev/cli.sh | sh
 
 RUN pip install -r requirements.txt
 
+RUN pip install git+https://github.com/dpkp/kafka-python.git
+
 CMD ["python", "app/kafka_consume_topics.py"]   
