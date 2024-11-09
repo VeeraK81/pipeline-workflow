@@ -39,7 +39,7 @@ pipeline {
             steps {
                 script {
                     // Run the Docker container in detached mode
-                    sh 'docker run -d --name fraud-detection fraud-detection-pipeline-image'
+                    sh 'docker run fraud-detection-pipeline-image'
 
                     // Verify that the container is running
                     def containerStatus = sh(script: "docker inspect -f '{{.State.Running}}' fraud-detection", returnStdout: true).trim()
