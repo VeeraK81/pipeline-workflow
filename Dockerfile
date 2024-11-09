@@ -4,8 +4,6 @@ WORKDIR /home
 COPY . .
 ENV PYTHONPATH=/home
 
-ENV KAFKA_BROKER=kafka:9092
-
 RUN apt-get update
 RUN apt-get install nano unzip
 RUN apt install curl -y
