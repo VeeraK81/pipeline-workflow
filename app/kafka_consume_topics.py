@@ -31,7 +31,7 @@ def run_consumer():
     print('inside run consumer')
 
     # bootstrap_servers = ['kafka:9092']
-    bootstrap_servers = ['host.docker.internal:29092']
+    bootstrap_servers = ['0.0.0.0:29092']
 
     topicName = 'source.public.experiments'
 
