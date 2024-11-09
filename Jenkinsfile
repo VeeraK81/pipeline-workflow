@@ -11,6 +11,7 @@ pipeline {
                         echo "Stopping and removing existing fraud-detection container..."
                         docker stop fraud-detection || true
                         docker rm fraud-detection || true
+                        docker rmi fraud-detection-pipeline-image || true
                     fi
                     '''
                 }
