@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the code from the repository
-                git branch: 'master', url: 'https://github.com/VeeraK81/pipeline-workflow.git'
+                git branch: 'main', url: 'https://github.com/VeeraK81/pipeline-workflow.git'
             }
         }
 
