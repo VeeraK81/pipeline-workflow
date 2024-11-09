@@ -66,7 +66,7 @@ def sendRequest(msg):
 print("inside fraud-detection file")
 
 # bootstrap_servers = ['kafka:9092']
-bootstrap_servers = ['host.docker.internal:9092']
+bootstrap_servers = ['kafka:9092']
 
 topicName = 'source.public.experiments'
 
