@@ -18,6 +18,18 @@ pipeline {
             }
         }
 
+        stage('Run Docker Image') {
+            steps {
+                script {
+                    // docker.image('fraud-detection-pipeline-image').inside {
+                    //     sh 'python tests/tests.py --junitxml=results.xml'
+                    // }
+                    sh 'docker run --rm -v  $(pwd):/app ${DOCKER_IMAGE}'
+                }
+            }
+        }
+
+
     //     stage('Run Tests Inside Docker Container') {
     //         steps {
     //             withCredentials([
