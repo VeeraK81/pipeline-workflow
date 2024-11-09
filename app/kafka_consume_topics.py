@@ -60,6 +60,7 @@ def sendRequest(msg):
 #     print('inside kafka-consume-file')
 #     run_consumer()      
 
+print("inside fraud-detection file")
 
 bootstrap_servers = ['kafka:9092']
 
@@ -75,7 +76,6 @@ consumer = KafkaConsumer(
 
 consumer.topics()
 
-print("inside fraud-detection file")
 # Read and print message from consumer
 for msg in consumer:
     
