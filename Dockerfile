@@ -15,4 +15,4 @@ RUN pip install -r requirements.txt
 
 RUN pip install git+https://github.com/dpkp/kafka-python.git
 
-CMD ["python", "app/kafka_consume_topics.py"]   
+CMD ["python", "app/fraud_detection_train.py"]   
