@@ -10,10 +10,32 @@ from lightgbm import LGBMClassifier
 from sklearn.metrics import classification_report, accuracy_score
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
+import boto3
+import os
+import pandas as pd
+from io import StringIO
 
 # Load data
-def load_data(url):
-    return pd.read_csv(url)
+# def load_data(url):
+#     return pd.read_csv(url)
+
+def load_data():
+    bucket_name = "mymlflowbuc"
+    file_key = "transactions/fraudTest.csv"
+
+    # Create an S3 client
+    s3_client = boto3.client(
+        's3',
+        aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+        aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY')
+    )
+
+    # Read the CSV file from S3
+    response = s3_client.get_object(Bucket=bucket_name, Key=file_key)
+    csv_content = response['Body'].read().decode('utf-8')
+
+    # Load into a pandas DataFrame
+    return pd.read_csv(StringIO(csv_content))
 
 # Preprocess data
 def preprocess_data(df):

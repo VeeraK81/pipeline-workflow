@@ -1,20 +1,26 @@
 import pytest
 from unittest import mock
-from app.train import load_data, preprocess_data, create_pipeline, train_model
+from app.fraud_detection_train import load_data, preprocess_data, create_pipeline, train_model
+from io import StringIO
 
-s3_url = "s3://mymlflowbuc/transactions/fraudTest.csv"
+# s3_url = "s3://mymlflowbuc/transactions/fraudTest.csv"
+
+
+    
 
 # Test data loading
 def test_load_data():
-    # url = "https://julie-2-next-resources.s3.eu-west-3.amazonaws.com/full-stack-full-time/linear-regression-ft/californian-housing-market-ft/california_housing_market.csv"
-    url = s3_url
-    df = load_data(url)
+    # url = "https://julie-2-next-resources.s3.eu-west-3.amazonaws.com/full-stack-full-time/linear-regression-ft/californian-housing-market-ft/california_housing_market.csv"    
+    # S3 Bucket and Key
+    
+    df = load_data()
+ 
     assert not df.empty, "Dataframe is empty"
 
 # Test data preprocessing
 def test_preprocess_data():
     # df = load_data("https://julie-2-next-resources.s3.eu-west-3.amazonaws.com/full-stack-full-time/linear-regression-ft/californian-housing-market-ft/california_housing_market.csv")
-    df = load_data(s3_url)
+    df = load_data()
     X_train, X_test, y_train, y_test = preprocess_data(df)
     assert len(X_train) > 0, "Training data is empty"
     assert len(X_test) > 0, "Test data is empty"
@@ -31,7 +37,7 @@ def test_create_pipeline():
 def test_train_model(mock_fit):
     pipe = create_pipeline()
     # X_train, X_test, y_train, y_test = preprocess_data(load_data("https://julie-2-next-resources.s3.eu-west-3.amazonaws.com/full-stack-full-time/linear-regression-ft/californian-housing-market-ft/california_housing_market.csv"))
-    X_train, X_test, y_train, y_test = preprocess_data(load_data(s3_url))
+    X_train, X_test, y_train, y_test = preprocess_data(load_data())
     # param_grid = {"Random_Forest__n_estimators": [90], "Random_Forest__criterion": ["squared_error"]}
     param_grid = {
         "classifier__n_estimators": [100, 150],
