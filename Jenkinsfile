@@ -18,6 +18,24 @@ pipeline {
             }
         }
 
+        stage('Check AWS Credentials') {
+            steps {
+                withCredentials([
+                    string(credentialsId: 'aws-access-key', variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'aws-secret-key', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    script {
+                        sh '''
+                            echo "AWS Access Key ID: $AWS_ACCESS_KEY_ID"
+                        '''
+                    }
+                }
+            }
+        }
+
+
+
+
         stage('Run Tests Inside Docker Container') {
             steps {
                 withCredentials([
