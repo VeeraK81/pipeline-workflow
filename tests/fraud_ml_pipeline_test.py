@@ -2,6 +2,7 @@ import pytest
 from unittest import mock
 from app.fraud_detection_train import load_data, preprocess_data, create_pipeline, train_model
 from io import StringIO
+import os
 
 # s3_url = "s3://mymlflowbuc/transactions/fraudTest.csv"
 
@@ -12,6 +13,8 @@ from io import StringIO
 def test_load_data():
     # url = "https://julie-2-next-resources.s3.eu-west-3.amazonaws.com/full-stack-full-time/linear-regression-ft/californian-housing-market-ft/california_housing_market.csv"    
     # S3 Bucket and Key
+    print("AWS_ACCESS_KEY_ID:", os.getenv('AWS_ACCESS_KEY_ID'))
+    print("AWS_SECRET_ACCESS_KEY:", os.getenv('AWS_SECRET_ACCESS_KEY'))
     
     df = load_data()
  
