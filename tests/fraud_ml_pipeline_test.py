@@ -5,14 +5,8 @@ from io import StringIO
 import os
 
 
-
-
-
-    
-
 # Test data loading
 def test_load_data():
-    # url = "https://julie-2-next-resources.s3.eu-west-3.amazonaws.com/full-stack-full-time/linear-regression-ft/californian-housing-market-ft/california_housing_market.csv"    
     # S3 Bucket and Key
     bucket_name = os.getenv("BUCKET_NAME")
     file_key = os.getenv("FILE_KEY")
@@ -25,7 +19,6 @@ def test_load_data():
 def test_preprocess_data():
     bucket_name = os.getenv("BUCKET_NAME")
     file_key = os.getenv("FILE_KEY")
-    # df = load_data("https://julie-2-next-resources.s3.eu-west-3.amazonaws.com/full-stack-full-time/linear-regression-ft/californian-housing-market-ft/california_housing_market.csv")
     df = load_data(bucket_name, file_key)
     X_train, X_test, y_train, y_test = preprocess_data(df)
     assert len(X_train) > 0, "Training data is empty"
@@ -44,9 +37,7 @@ def test_train_model(mock_fit):
     pipe = create_pipeline()
     bucket_name = os.getenv("BUCKET_NAME")
     file_key = os.getenv("FILE_KEY")
-    # X_train, X_test, y_train, y_test = preprocess_data(load_data("https://julie-2-next-resources.s3.eu-west-3.amazonaws.com/full-stack-full-time/linear-regression-ft/californian-housing-market-ft/california_housing_market.csv"))
     X_train, X_test, y_train, y_test = preprocess_data(load_data(bucket_name, file_key))
-    # param_grid = {"Random_Forest__n_estimators": [90], "Random_Forest__criterion": ["squared_error"]}
     param_grid = {
         "classifier__n_estimators": [100, 150],
         "classifier__learning_rate": [0.01, 0.1],
