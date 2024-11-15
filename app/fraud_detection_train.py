@@ -81,8 +81,8 @@ def run_experiment(experiment_name, data_url, param_grid, artifact_path, registe
 
 # Entry point for the script
 if __name__ == "__main__":
-    experiment_name = "fraud_detection_experiment"
-    data_url = "path_to_your_data.csv"  # Update with the path to your local file or online URL
+    experiment_name = "fraud_detection_hyperparameter_tuning"
+    data_url = "s3://mymlflowbuc/transactions/fraudTest.csv"  # Update with the path to your local file or online URL
     param_grid = {
         "classifier__n_estimators": [100, 150],
         "classifier__learning_rate": [0.01, 0.1],
