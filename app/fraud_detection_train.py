@@ -18,9 +18,6 @@ from io import StringIO
 
 def load_data():
     
-    # bucket_name = "mymlflowbuc"
-    # file_key = "transactions/fraudTest.csv"
-    
     bucket_name = os.getenv('BUCKET_NAME')
     file_key = os.getenv('FILE_KEY')
 
@@ -35,8 +32,6 @@ def load_data():
     response = s3_client.get_object(Bucket=bucket_name, Key=file_key)
     csv_content = response['Body'].read().decode('utf-8')
     
-    print(pd.read_csv(StringIO(csv_content)).head())
-
     # Load into a pandas DataFrame
     return pd.read_csv(StringIO(csv_content))
 
@@ -107,10 +102,6 @@ def run_experiment(experiment_name, param_grid, artifact_path, registered_model_
 # Entry point for the script
 if __name__ == "__main__":
     experiment_name = "fraud_detection_hyperparameter_tuning"
-    # bucket_name = "mymlflowbuc"  # Update with the path to your local file or online URL
-    # file_key = "/transactions/fraudTestLess.csv"
-    # bucket_name = os.getenv('BUCKET_NAME') # Update with the path to your local file or online URL
-    # file_key = os.getenv('FILE_KEY')
     param_grid = {
         "classifier__n_estimators": [100, 150],
         "classifier__learning_rate": [0.01, 0.1],
