@@ -14,14 +14,12 @@ import boto3
 import os
 from io import StringIO
 
-# Load data
-# def load_data(url):
-#     return pd.read_csv(url)
 
-def load_data():
+
+def load_data(bucket_name, file_key):
     
-    bucket_name = "mymlflowbuc"
-    file_key = "transactions/fraudTest.csv"
+    # bucket_name = "mymlflowbuc"
+    # file_key = "transactions/fraudTest.csv"
 
     # Create an S3 client
     s3_client = boto3.client(
@@ -77,11 +75,11 @@ def log_metrics_and_model(model, X_train, y_train, X_test, y_test, artifact_path
     )
 
 # Main function to execute the workflow
-def run_experiment(experiment_name, data_url, param_grid, artifact_path, registered_model_name):
+def run_experiment(experiment_name, bucket_name, file_key, param_grid, artifact_path, registered_model_name):
     start_time = time.time()
 
     # Load and preprocess data
-    df = load_data()
+    df = load_data(bucket_name, file_key)
     X_train, X_test, y_train, y_test = preprocess_data(df)
 
     # Create pipeline
@@ -106,7 +104,10 @@ def run_experiment(experiment_name, data_url, param_grid, artifact_path, registe
 # Entry point for the script
 if __name__ == "__main__":
     experiment_name = "fraud_detection_hyperparameter_tuning"
-    data_url = "s3://mymlflowbuc/transactions/fraudTest.csv"  # Update with the path to your local file or online URL
+    # bucket_name = "mymlflowbuc"  # Update with the path to your local file or online URL
+    # file_key = "/transactions/fraudTestLess.csv"
+    bucket_name = os.getenv('BUCKET_NAME') # Update with the path to your local file or online URL
+    file_key = os.getenv('FILE_KEY')
     param_grid = {
         "classifier__n_estimators": [100, 150],
         "classifier__learning_rate": [0.01, 0.1],
@@ -115,4 +116,4 @@ if __name__ == "__main__":
     artifact_path = "fraud_detection_model"
     registered_model_name = "fraud_detector_lgbm"
 
-    run_experiment(experiment_name, data_url, param_grid, artifact_path, registered_model_name)
+    run_experiment(experiment_name, bucket_name, file_key, param_grid, artifact_path, registered_model_name)

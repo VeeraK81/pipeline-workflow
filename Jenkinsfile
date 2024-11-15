@@ -51,7 +51,9 @@ pipeline {
                     string(credentialsId: 'aws-access-key', variable: 'AWS_ACCESS_KEY_ID'),
                     string(credentialsId: 'aws-secret-key', variable: 'AWS_SECRET_ACCESS_KEY'),
                     string(credentialsId: 'backend-store-uri', variable: 'BACKEND_STORE_URI'),
-                    string(credentialsId: 'artifact-root', variable: 'ARTIFACT_ROOT')
+                    string(credentialsId: 'artifact-root', variable: 'ARTIFACT_ROOT'),
+                    string(credentialsId: 'fraud-detection-bucket-name', variable: 'BUCKET_NAME'),
+                    string(credentialsId: 'fraud-detection-file-key', variable: 'FILE_KEY')
                 ]) {
                     // Write environment variables to a temporary file
                     // KEEP SINGLE QUOTE FOR SECURITY PURPOSES (MORE INFO HERE: https://www.jenkins.io/doc/book/pipeline/jenkinsfile/#handling-credentials)
@@ -80,7 +82,10 @@ pipeline {
                                 -e MLFLOW_TRACKING_URI=$MLFLOW_TRACKING_URI \
                                 -e BACKEND_STORE_URI=$BACKEND_STORE_URI \
                                 -e ARTIFACT_ROOT=$ARTIFACT_ROOT \
-                                fraud-detection-pipeline-image
+                                -e BUCKET_NAME=$BUCKET_NAME \
+                                -e FILE_KEY=$FILE_KEY \
+                                fraud-detection-pipeline-image \
+                                bash -c "pytest --maxfail=1 --disable-warnings"
                         '''
                     }
                 }
