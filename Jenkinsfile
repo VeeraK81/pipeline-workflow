@@ -26,8 +26,16 @@ pipeline {
                 ]) {
                     script {
                         sh '''
-                            echo "AWS Access Key ID: $AWS_ACCESS_KEY_ID"
+                            if [ -z "$AWS_ACCESS_KEY_ID" ]; then
+                                echo "AWS_ACCESS_KEY_ID is NOT set!"
+                            else
+                                echo "AWS_ACCESS_KEY_ID is set correctly."
+                                AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+                                AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+                            fi
                         '''
+
+
                     }
                 }
             }
