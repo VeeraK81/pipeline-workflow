@@ -33,6 +33,8 @@ def load_data():
     # Read the CSV file from S3
     response = s3_client.get_object(Bucket=bucket_name, Key=file_key)
     csv_content = response['Body'].read().decode('utf-8')
+    
+    print(pd.read_csv(StringIO(csv_content)).head())
 
     # Load into a pandas DataFrame
     return pd.read_csv(StringIO(csv_content))
