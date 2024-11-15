@@ -4,12 +4,15 @@ from app.fraud_detection_train import load_data, preprocess_data, create_pipelin
 from io import StringIO
 import os
 
+bucket_name = "mymlflowbuc"  # Update with the path to your local file or online URL
+file_key = "/transactions/fraudTestLess.csv"
 
 # Test data loading
 def test_load_data():
     # S3 Bucket and Key
-    bucket_name = os.getenv("BUCKET_NAME")
-    file_key = os.getenv("FILE_KEY")
+    # bucket_name = os.getenv("BUCKET_NAME")
+    # file_key = os.getenv("FILE_KEY")
+    
     
     df = load_data(bucket_name, file_key)
  
@@ -17,8 +20,8 @@ def test_load_data():
 
 # Test data preprocessing
 def test_preprocess_data():
-    bucket_name = os.getenv("BUCKET_NAME")
-    file_key = os.getenv("FILE_KEY")
+    # bucket_name = os.getenv("BUCKET_NAME")
+    # file_key = os.getenv("FILE_KEY")
     df = load_data(bucket_name, file_key)
     X_train, X_test, y_train, y_test = preprocess_data(df)
     assert len(X_train) > 0, "Training data is empty"
@@ -35,8 +38,8 @@ def test_create_pipeline():
 @mock.patch('app.fraud_detection_train.GridSearchCV.fit', return_value=None)
 def test_train_model(mock_fit):
     pipe = create_pipeline()
-    bucket_name = os.getenv("BUCKET_NAME")
-    file_key = os.getenv("FILE_KEY")
+    # bucket_name = os.getenv("BUCKET_NAME")
+    # file_key = os.getenv("FILE_KEY")
     X_train, X_test, y_train, y_test = preprocess_data(load_data(bucket_name, file_key))
     param_grid = {
         "classifier__n_estimators": [100, 150],
