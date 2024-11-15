@@ -6,5 +6,7 @@ pytest
 lightgbm
 numpy
 joblib
-kafka-python
 requests
+fsspec
+fsspec
+s3fs
