@@ -81,7 +81,7 @@ def run_experiment(experiment_name, data_url, param_grid, artifact_path, registe
     start_time = time.time()
 
     # Load and preprocess data
-    df = load_data(data_url)
+    df = load_data()
     X_train, X_test, y_train, y_test = preprocess_data(df)
 
     # Create pipeline
