@@ -8,17 +8,12 @@ import os
 # Test data loading
 def test_load_data():
     # S3 Bucket and Key
-    # bucket_name = os.getenv("BUCKET_NAME")
-    # file_key = os.getenv("FILE_KEY")
-    
     df = load_data()
  
     assert not df.empty, "Dataframe is empty"
 
 # Test data preprocessing
 def test_preprocess_data():
-    bucket_name = os.getenv("BUCKET_NAME")
-    file_key = os.getenv("FILE_KEY")
     df = load_data()
     X_train, X_test, y_train, y_test = preprocess_data(df)
     assert len(X_train) > 0, "Training data is empty"
@@ -35,8 +30,6 @@ def test_create_pipeline():
 @mock.patch('app.fraud_detection_train.GridSearchCV.fit', return_value=None)
 def test_train_model(mock_fit):
     pipe = create_pipeline()
-    bucket_name = os.getenv("BUCKET_NAME")
-    file_key = os.getenv("FILE_KEY")
     X_train, X_test, y_train, y_test = preprocess_data(load_data())
     param_grid = {
         "classifier__n_estimators": [100, 150],

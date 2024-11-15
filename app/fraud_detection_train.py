@@ -18,8 +18,11 @@ from io import StringIO
 
 def load_data():
     
-    bucket_name = "mymlflowbuc"
-    file_key = "transactions/fraudTest.csv"
+    # bucket_name = "mymlflowbuc"
+    # file_key = "transactions/fraudTest.csv"
+    
+    bucket_name = os.getenv('BUCKET_NAME')
+    file_key = os.getenv('FILE_KEY')
 
     # Create an S3 client
     s3_client = boto3.client(
