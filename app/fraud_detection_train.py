@@ -104,10 +104,10 @@ def run_experiment(experiment_name, bucket_name, file_key, param_grid, artifact_
 # Entry point for the script
 if __name__ == "__main__":
     experiment_name = "fraud_detection_hyperparameter_tuning"
-    bucket_name = "mymlflowbuc"  # Update with the path to your local file or online URL
-    file_key = "/transactions/fraudTestLess.csv"
-    # bucket_name = os.getenv('BUCKET_NAME') # Update with the path to your local file or online URL
-    # file_key = os.getenv('FILE_KEY')
+    # bucket_name = "mymlflowbuc"  # Update with the path to your local file or online URL
+    # file_key = "/transactions/fraudTestLess.csv"
+    bucket_name = os.getenv('BUCKET_NAME') # Update with the path to your local file or online URL
+    file_key = os.getenv('FILE_KEY')
     param_grid = {
         "classifier__n_estimators": [100, 150],
         "classifier__learning_rate": [0.01, 0.1],
