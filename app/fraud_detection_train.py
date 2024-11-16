@@ -82,8 +82,6 @@ def run_experiment(experiment_name, param_grid, artifact_path, registered_model_
     # Set experiment's info 
     mlflow.set_experiment(experiment_name)
     experiment = mlflow.get_experiment_by_name(experiment_name)
-    
-    mlflow.set_artifact_uri(os.getenv('ARTIFACT_ROOT'))
 
     # Call mlflow autolog
     mlflow.sklearn.autolog()
