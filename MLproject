@@ -6,6 +6,7 @@ docker_env:
     "MLFLOW_EXPERIMENT_ID",
     "AWS_ACCESS_KEY_ID",
     "AWS_SECRET_ACCESS_KEY",
+    "ARTIFACT_ROOT",
     "BUCKET_NAME",
     "FILE_KEY"
   ]
