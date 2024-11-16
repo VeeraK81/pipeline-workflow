@@ -3,7 +3,6 @@ scikit-learn
 pandas
 boto3
 pytest
-lightgbm==3.3.0
 numpy
 joblib
 requests

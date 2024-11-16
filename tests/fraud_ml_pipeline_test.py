@@ -33,8 +33,9 @@ def test_train_model(mock_fit):
     X_train, X_test, y_train, y_test = preprocess_data(load_data())
     param_grid = {
         "classifier__n_estimators": [100, 150],
-        "classifier__learning_rate": [0.01, 0.1],
-        "classifier__max_depth": [3, 5]
-    }
+        "classifier__max_depth": [10, 20, 30],
+        "classifier__min_samples_split": [2, 5],
+        "classifier__min_samples_leaf": [1, 2]
+    }   
     model = train_model(pipe, X_train, y_train, param_grid)
     assert model is not None, "Model training failed"
