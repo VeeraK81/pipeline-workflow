@@ -8,7 +8,8 @@ docker_env:
     "AWS_SECRET_ACCESS_KEY",
     "ARTIFACT_ROOT",
     "BUCKET_NAME",
-    "FILE_KEY"
+    "FILE_KEY",
+    "ARTIFACT_STORE_URI"
   ]
 entry_points:
   main:
