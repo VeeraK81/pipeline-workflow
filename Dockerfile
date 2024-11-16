@@ -10,6 +10,6 @@ RUN apt install curl -y
 
 RUN curl -fsSL https://get.deta.dev/cli.sh | sh
 
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 CMD ["python", "app/fraud_detection_train.py"]   
