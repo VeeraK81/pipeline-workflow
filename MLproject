@@ -1,4 +1,4 @@
-name: californian_housing_market
+name: transaction_fraud_detection
 docker_env:
   image: jedha/sample-mlflow-server
   environment: [
@@ -9,4 +9,4 @@ docker_env:
   ]
 entry_points:
   main:
-    command: "python app/train.py"
+    command: "python app/fraud_detection_train.py"
