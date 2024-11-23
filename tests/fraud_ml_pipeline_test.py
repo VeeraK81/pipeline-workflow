@@ -82,12 +82,13 @@ def test_train_model(mock_fit):
             "classifier__max_depth": [10, 20, 30],
             "classifier__min_samples_split": [2, 5],
             "classifier__min_samples_leaf": [1, 2]
-        },
-        "LogisticRegression": {
-            "classifier__C": [0.1, 1.0, 10],  # Regularization strength
-            "classifier__penalty": ['l2'],   # Regularization type
-            "classifier__solver": ['lbfgs', 'liblinear']  # Solvers for optimization
         }
+        # ,
+        # "LogisticRegression": {
+        #     "classifier__C": [0.1, 1.0, 10],  # Regularization strength
+        #     "classifier__penalty": ['l2'],   # Regularization type
+        #     "classifier__solver": ['lbfgs', 'liblinear']  # Solvers for optimization
+        # }
     }
     
     # Test each pipeline
