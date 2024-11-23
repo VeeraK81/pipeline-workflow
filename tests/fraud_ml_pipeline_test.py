@@ -89,11 +89,10 @@ def test_create_pipeline():
 
 
 # Test model training (mocking GridSearchCV)
-@mock.patch('app.fraud_detection_train.GridSearchCV.fit', return_value=None)
-def test_train_model(mock_fit):
-    pipelines = create_pipeline()
+def test_train_model():
+    # Load data directly
     X_train, X_test, y_train, y_test = preprocess_data(load_data())
-
+    
     # Define the parameter grid for both models
     param_grids = {
         "RandomForest": {
@@ -101,17 +100,27 @@ def test_train_model(mock_fit):
             "classifier__max_depth": [10, 20, 30],
             "classifier__min_samples_split": [2, 5],
             "classifier__min_samples_leaf": [1, 2]
-        }
-        ,
+        },
         "LogisticRegression": {
             "classifier__C": [0.1, 1.0, 10],  # Regularization strength
             "classifier__penalty": ['l2'],   # Regularization type
             "classifier__solver": ['lbfgs', 'liblinear']  # Solvers for optimization
         }
     }
-    
+
     # Test each pipeline
+    pipelines = create_pipeline()
+    
     for name, pipe in pipelines:
+        print(f"Training with pipeline: {name}")
+        
+        # Train model with GridSearchCV and parameter grid
         model = train_model([(name, pipe)], X_train, y_train, {name: param_grids[name]})
-        print(name, )
+        
+        # Ensure the model is returned
         assert model is not None, f"Model training failed for {name}"
+
+        # Check the best model selection
+        assert hasattr(model, 'best_score_'), f"Model for {name} does not have a 'best_score_' attribute."
+        assert hasattr(model, 'best_params_'), f"Model for {name} does not have 'best_params_' attribute."
+
