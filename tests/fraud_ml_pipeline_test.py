@@ -50,6 +50,7 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
 
 
 # Test data loading
@@ -112,4 +113,5 @@ def test_train_model(mock_fit):
     # Test each pipeline
     for name, pipe in pipelines:
         model = train_model([(name, pipe)], X_train, y_train, {name: param_grids[name]})
+        print(name, )
         assert model is not None, f"Model training failed for {name}"
