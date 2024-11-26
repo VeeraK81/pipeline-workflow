@@ -214,7 +214,7 @@ def create_pipeline():
     ]
 
 # Consolidated function to calculate and log metrics
-def calculate_and_log_metrics(model, X_train, y_train, X_test, y_test):
+def calculate_and_log_metrics(model, X_train, y_train, X_test, y_test, artifact_path, registered_model_name):
     metrics = {
         "training_accuracy_score": accuracy_score(y_train, model.predict(X_train)),
         "training_f1_score": f1_score(y_train, model.predict(X_train)),
@@ -233,7 +233,7 @@ def calculate_and_log_metrics(model, X_train, y_train, X_test, y_test):
     mlflow.sklearn.log_model(
         sk_model=model.best_estimator_,
         artifact_path=artifact_path
-        )
+    )
 
     # Construct model URI for registration
     model_uri = f"runs:/{mlflow.active_run().info.run_id}/{artifact_path}"
@@ -291,7 +291,7 @@ def run_experiment(experiment_name, param_grids, artifact_path, registered_model
         model = train_model(pipelines, X_train, y_train, param_grids)
         
         # Calculate and log metrics
-        calculate_and_log_metrics(model, X_train, y_train, X_test, y_test)
+        calculate_and_log_metrics(model, X_train, y_train, X_test, y_test, artifact_path, registered_model_name)
         
         print(f"...Training Done! --- Total training time: {time.time() - start_time} seconds")
 
