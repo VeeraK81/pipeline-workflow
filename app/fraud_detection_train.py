@@ -188,6 +188,7 @@ def load_data():
     # Load into a pandas DataFrame
     return pd.read_csv(StringIO(csv_content))
 
+
 # Preprocess data
 def preprocess_data(df):
     # Create 'distance_to_merchant' as an example feature
@@ -286,7 +287,7 @@ def run_experiment(experiment_name, param_grids, artifact_path, registered_model
     # Call mlflow autolog
     mlflow.sklearn.autolog()
 
-    with mlflow.start_run(experiment_id=experiment.experiment_id) as run:
+    try:
         # Train model
         model = train_model(pipelines, X_train, y_train, param_grids)
         
@@ -294,6 +295,10 @@ def run_experiment(experiment_name, param_grids, artifact_path, registered_model
         calculate_and_log_metrics(model, X_train, y_train, X_test, y_test, artifact_path, registered_model_name)
         
         print(f"...Training Done! --- Total training time: {time.time() - start_time} seconds")
+    finally:
+        # Ensure the run is closed properly
+        if mlflow.active_run():
+            mlflow.end_run()
 
 # Entry point for the script
 if __name__ == "__main__":
