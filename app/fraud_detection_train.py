@@ -168,7 +168,7 @@ from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_sc
 import boto3
 import os
 from io import StringIO
-from mlflow import MlflowClient
+from mlflow.tracking import MlflowClient
 from mlflow.exceptions import RestException
 
 
