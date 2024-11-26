@@ -5,8 +5,9 @@
 # from sklearn.model_selection import train_test_split, GridSearchCV
 # from sklearn.preprocessing import StandardScaler
 # from sklearn.ensemble import RandomForestClassifier
+# from sklearn.linear_model import LogisticRegression
 # from sklearn.pipeline import Pipeline
-# from sklearn.metrics import classification_report, accuracy_score
+# from sklearn.metrics import classification_report, accuracy_score, f1_score, precision_score, recall_score, log_loss, roc_auc_score
 # from sklearn.compose import ColumnTransformer
 # from sklearn.impute import SimpleImputer
 # import boto3
@@ -43,25 +44,62 @@
 #     y = df['is_fraud']
 #     return train_test_split(X, y, test_size=0.2, random_state=42)
 
-# # Create the pipeline
+# # Create the pipeline with both models
 # def create_pipeline():
-#     return Pipeline(steps=[
-#         ("scaler", StandardScaler()),
-#         ("classifier", RandomForestClassifier(random_state=42))
-#     ])
+#     return [
+#         ("RandomForest", Pipeline(steps=[
+#             ("scaler", StandardScaler()),
+#             ("classifier", RandomForestClassifier(random_state=42))
+#         ])),
+#         ("LogisticRegression", Pipeline(steps=[
+#             ("scaler", StandardScaler()),
+#             ("classifier", LogisticRegression(random_state=42, max_iter=1000))
+#         ]))
+#     ]
 
 # # Train model
-# def train_model(pipe, X_train, y_train, param_grid, cv=2, n_jobs=-1, verbose=3):
-#     model = GridSearchCV(pipe, param_grid, cv=cv, n_jobs=n_jobs, verbose=verbose, scoring="accuracy")
-#     model.fit(X_train, y_train)
-#     return model
+# def train_model(pipelines, X_train, y_train, param_grids, cv=2, n_jobs=-1, verbose=3):
+#     best_model = None
+#     best_score = 0
+#     best_pipeline = None
+
+#     for name, pipe in pipelines:
+#         print(f"Training with pipeline: {name}")
+#         model = GridSearchCV(pipe, param_grids[name], cv=cv, n_jobs=n_jobs, verbose=verbose, scoring="accuracy")
+#         model.fit(X_train, y_train)
+
+#         # Check if this model is the best one so far
+#         if model.best_score_ > best_score:
+#             best_score = model.best_score_
+#             best_model = model
+#             best_pipeline = name
+
+#     print(f"Best model selected: {best_pipeline} with score: {best_score}")
+#     return best_model
 
 # # Log metrics and model to MLflow
 # def log_metrics_and_model(model, X_train, y_train, X_test, y_test, artifact_path, registered_model_name):
 #     train_score = accuracy_score(y_train, model.predict(X_train))
 #     test_score = accuracy_score(y_test, model.predict(X_test))
+#     train_accuracy = accuracy_score(y_train, model.predict(X_train))
+#     train_f1 = f1_score(y_train, model.predict(X_train))
+#     train_precision = precision_score(y_train, model.predict(X_train))
+#     train_recall = recall_score(y_train, model.predict(X_train))
+#     train_log_loss = log_loss(y_train, model.predict_proba(X_train))
+#     train_roc_auc = roc_auc_score(y_train, model.predict_proba(X_train)[:, 1])
+
+#     mlflow.log_metric("training_accuracy_score", train_accuracy)
+#     mlflow.log_metric("training_f1_score", train_f1)
+#     mlflow.log_metric("training_precision_score", train_precision)
+#     mlflow.log_metric("training_recall_score", train_recall)
+#     mlflow.log_metric("training_log_loss", train_log_loss)
+#     mlflow.log_metric("training_roc_auc", train_roc_auc)
 #     mlflow.log_metric("Train Accuracy", train_score)
 #     mlflow.log_metric("Test Accuracy", test_score)
+
+#     # Log the best cross-validation score
+#     mlflow.log_metric("best_cv_score", model.best_score_)
+    
 #     mlflow.sklearn.log_model(
 #         sk_model=model.best_estimator_,
 #         artifact_path=artifact_path,
@@ -69,15 +107,15 @@
 #     )
 
 # # Main function to execute the workflow
-# def run_experiment(experiment_name, param_grid, artifact_path, registered_model_name):
+# def run_experiment(experiment_name, param_grids, artifact_path, registered_model_name):
 #     start_time = time.time()
 
 #     # Load and preprocess data
 #     df = load_data()
 #     X_train, X_test, y_train, y_test = preprocess_data(df)
 
-#     # Create pipeline
-#     pipe = create_pipeline()
+#     # Create pipelines
+#     pipelines = create_pipeline()
 
 #     # Set experiment's info 
 #     mlflow.set_experiment(experiment_name)
@@ -88,23 +126,34 @@
 
 #     with mlflow.start_run(experiment_id=experiment.experiment_id):
 #         # Train model
-#         model = train_model(pipe, X_train, y_train, param_grid)
+#         model = train_model(pipelines, X_train, y_train, param_grids)
         
 #     print(f"...Training Done! --- Total training time: {time.time() - start_time} seconds")
 
 # # Entry point for the script
 # if __name__ == "__main__":
 #     experiment_name = "fraud_detection_hyperparameter_tuning"
-#     param_grid = {
-#         "classifier__n_estimators": [100, 150],
-#         "classifier__max_depth": [10, 20, 30],
-#         "classifier__min_samples_split": [2, 5],
-#         "classifier__min_samples_leaf": [1, 2]
+    
+#     # Parameter grids for both RandomForest and LogisticRegression
+#     param_grids = {
+#         "RandomForest": {
+#             "classifier__n_estimators": [100, 150],
+#             "classifier__max_depth": [10, 20, 30],
+#             "classifier__min_samples_split": [2, 5],
+#             "classifier__min_samples_leaf": [1, 2]
+#         },
+#         "LogisticRegression": {
+#             "classifier__C": [0.1, 1.0, 10],  # Regularization strength
+#             "classifier__penalty": ['l2'],   # Regularization type
+#             "classifier__solver": ['lbfgs', 'liblinear']  # Solvers for optimization
+#         }
 #     }
+    
 #     artifact_path = "fraud_detection_model"
-#     registered_model_name = "fraud_detector_rf"
+#     registered_model_name = "fraud_detector_best_model"
 
-#     run_experiment(experiment_name, param_grid, artifact_path, registered_model_name)
+#     run_experiment(experiment_name, param_grids, artifact_path, registered_model_name)
+
 
 import pandas as pd
 import numpy as np
@@ -115,31 +164,29 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
-from sklearn.metrics import classification_report, accuracy_score
-from sklearn.compose import ColumnTransformer
-from sklearn.impute import SimpleImputer
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, log_loss, roc_auc_score
 import boto3
 import os
 from io import StringIO
 
+# Load data from S3
 def load_data():
-    # bucket_name = os.getenv('BUCKET_NAME')
-    # file_key = os.getenv('FILE_KEY')
+    bucket_name = os.getenv('BUCKET_NAME')
+    file_key = os.getenv('FILE_KEY')
 
-    # # Create an S3 client
-    # s3_client = boto3.client(
-    #     's3',
-    #     aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
-    #     aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY')
-    # )
+    # Create an S3 client
+    s3_client = boto3.client(
+        's3',
+        aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+        aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY')
+    )
 
-    # # Read the CSV file from S3
-    # response = s3_client.get_object(Bucket=bucket_name, Key=file_key)
-    # csv_content = response['Body'].read().decode('utf-8')
+    # Read the CSV file from S3
+    response = s3_client.get_object(Bucket=bucket_name, Key=file_key)
+    csv_content = response['Body'].read().decode('utf-8')
     
-    # # Load into a pandas DataFrame
-    # return pd.read_csv(StringIO(csv_content))
-    return pd.read_csv('fraudTest.csv')
+    # Load into a pandas DataFrame
+    return pd.read_csv(StringIO(csv_content))
 
 # Preprocess data
 def preprocess_data(df):
@@ -166,6 +213,22 @@ def create_pipeline():
         ]))
     ]
 
+# Consolidated function to calculate and log metrics
+def calculate_and_log_metrics(model, X_train, y_train, X_test, y_test):
+    metrics = {
+        "training_accuracy_score": accuracy_score(y_train, model.predict(X_train)),
+        "training_f1_score": f1_score(y_train, model.predict(X_train)),
+        "training_precision_score": precision_score(y_train, model.predict(X_train)),
+        "training_recall_score": recall_score(y_train, model.predict(X_train)),
+        "training_log_loss": log_loss(y_train, model.predict_proba(X_train)),
+        "training_roc_auc": roc_auc_score(y_train, model.predict_proba(X_train)[:, 1]),
+        "test_accuracy": accuracy_score(y_test, model.predict(X_test))
+    }
+
+    # Log metrics to MLflow
+    for metric_name, metric_value in metrics.items():
+        mlflow.log_metric(metric_name, metric_value)
+
 # Train model
 def train_model(pipelines, X_train, y_train, param_grids, cv=2, n_jobs=-1, verbose=3):
     best_model = None
@@ -186,18 +249,6 @@ def train_model(pipelines, X_train, y_train, param_grids, cv=2, n_jobs=-1, verbo
     print(f"Best model selected: {best_pipeline} with score: {best_score}")
     return best_model
 
-# Log metrics and model to MLflow
-def log_metrics_and_model(model, X_train, y_train, X_test, y_test, artifact_path, registered_model_name):
-    train_score = accuracy_score(y_train, model.predict(X_train))
-    test_score = accuracy_score(y_test, model.predict(X_test))
-    mlflow.log_metric("Train Accuracy", train_score)
-    mlflow.log_metric("Test Accuracy", test_score)
-    mlflow.sklearn.log_model(
-        sk_model=model.best_estimator_,
-        artifact_path=artifact_path,
-        registered_model_name=registered_model_name
-    )
-
 # Main function to execute the workflow
 def run_experiment(experiment_name, param_grids, artifact_path, registered_model_name):
     start_time = time.time()
@@ -216,11 +267,21 @@ def run_experiment(experiment_name, param_grids, artifact_path, registered_model
     # Call mlflow autolog
     mlflow.sklearn.autolog()
 
-    with mlflow.start_run(experiment_id=experiment.experiment_id):
+    with mlflow.start_run(experiment_id=experiment.experiment_id) as run:
         # Train model
         model = train_model(pipelines, X_train, y_train, param_grids)
         
-    print(f"...Training Done! --- Total training time: {time.time() - start_time} seconds")
+        # Calculate and log metrics
+        calculate_and_log_metrics(model, X_train, y_train, X_test, y_test)
+
+        # Optionally log the best model manually if needed
+        mlflow.sklearn.log_model(
+            sk_model=model.best_estimator_,
+            artifact_path=artifact_path,
+            registered_model_name=registered_model_name
+        )
+        
+        print(f"...Training Done! --- Total training time: {time.time() - start_time} seconds")
 
 # Entry point for the script
 if __name__ == "__main__":
