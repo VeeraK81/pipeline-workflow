@@ -168,6 +168,10 @@ from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_sc
 import boto3
 import os
 from io import StringIO
+from mlflow import MlflowClient
+from mlflow.exceptions import RestException
+
+
 
 # Load data from S3
 def load_data():
@@ -216,6 +220,7 @@ def create_pipeline():
 
 # Consolidated function to calculate and log metrics
 def calculate_and_log_metrics(model, X_train, y_train, X_test, y_test, artifact_path, registered_model_name):
+    
     metrics = {
         "training_accuracy_score": accuracy_score(y_train, model.predict(X_train)),
         "training_f1_score": f1_score(y_train, model.predict(X_train)),
@@ -235,14 +240,29 @@ def calculate_and_log_metrics(model, X_train, y_train, X_test, y_test, artifact_
         sk_model=model.best_estimator_,
         artifact_path=artifact_path
     )
+    
+    # Initialize MLflow client
+    client = MlflowClient()
 
     # Construct model URI for registration
     model_uri = f"runs:/{mlflow.active_run().info.run_id}/{artifact_path}"
-    
+
     # Debugging prints
     print(f"Model URI for registration: {model_uri}")
 
-    # Register the model
+    # Check if the model already exists
+    try:
+        client.get_registered_model(registered_model_name)
+        print(f"Model '{registered_model_name}' already exists. Using the existing model.")
+    except RestException:
+        # Model does not exist, so create it
+        try:
+            client.create_registered_model(registered_model_name)
+            print(f"Registered model created with name: {registered_model_name}")
+        except Exception as e:
+            print(f"Error creating registered model: {str(e)}")
+
+    # Register the model version
     try:
         result = mlflow.register_model(model_uri=model_uri, name=registered_model_name)
         print(f"Model registered with version: {result.version}")
@@ -279,6 +299,8 @@ def run_experiment(experiment_name, param_grids, artifact_path, registered_model
 
     # Create pipelines
     pipelines = create_pipeline()
+    
+    mlflow.set_tracking_uri(os.environ["MLFLOW_TRACKING_URI"])
 
     # Set experiment's info 
     mlflow.set_experiment(experiment_name)
