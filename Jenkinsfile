@@ -41,6 +41,7 @@ pipeline {
                                 -e ARTIFACT_ROOT=$ARTIFACT_ROOT \
                                 -e BUCKET_NAME=$BUCKET_NAME \
                                 -e FILE_KEY=$FILE_KEY \
+                                -e BACKEND_STORE_URI=$BACKEND_STORE_URI \
                                 fraud-detection-pipeline-image \
                                 bash -c "pytest --maxfail=1 --disable-warnings"
                         '''
