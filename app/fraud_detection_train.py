@@ -514,7 +514,7 @@ def run_experiment(experiment_name, param_grids, artifact_path, registered_model
 # Entry point for the script
 if __name__ == "__main__":
     
-    mlflow.set_tracking_uri("https://veeramanicadas-mlflow-server-demo.hf.space")
+    mlflow.set_tracking_uri("https://veeramanicadas-mlflow-server.hf.space")
     experiment_name = "fraud_detection_hyperparameter_tuning"
     mlflow.set_experiment(experiment_name)
     
