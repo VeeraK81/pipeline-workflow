@@ -37,7 +37,6 @@ pipeline {
                                 -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
                                 -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
                                 -e MLFLOW_TRACKING_URI=$MLFLOW_TRACKING_URI \
-                                -e BACKEND_STORE_URI=$BACKEND_STORE_URI \
                                 -e ARTIFACT_ROOT=$ARTIFACT_ROOT \
                                 -e BUCKET_NAME=$BUCKET_NAME \
                                 -e FILE_KEY=$FILE_KEY \
